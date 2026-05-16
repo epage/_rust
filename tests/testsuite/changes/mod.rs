@@ -76,6 +76,8 @@ fn correct_base() {
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
+     Changes for `foo`
+
 "#]])
         .run();
 }
@@ -134,15 +136,11 @@ fn package_selection() {
         .cargo_ship("ship")
         .arg_line("changes -p foo")
         .replace_crates_io(registry.index_url())
-        .with_status(2)
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
-[ERROR] unexpected argument '-p' found
-
-Usage: cargo ship changes
-
-For more information, try '--help'.
+     Changes for `foo`
+[NOTE] ignoring changes for `bar`
 
 "#]])
         .run();
@@ -184,15 +182,10 @@ fn publish_crates_io() {
         .cargo_ship("ship")
         .arg_line("changes --workspace")
         .replace_crates_io(registry.index_url())
-        .with_status(2)
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
-[ERROR] unexpected argument '--workspace' found
-
-Usage: cargo ship changes
-
-For more information, try '--help'.
+     Changes for `foo`
 
 "#]])
         .run();
@@ -230,15 +223,10 @@ fn publish_none() {
         .cargo_ship("ship")
         .arg_line("changes --workspace")
         .replace_crates_io(registry.index_url())
-        .with_status(2)
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
-[ERROR] unexpected argument '--workspace' found
-
-Usage: cargo ship changes
-
-For more information, try '--help'.
+     Changes for `foo`
 
 "#]])
         .run();
@@ -282,15 +270,10 @@ fn publish_alt() {
         .cargo_ship("ship")
         .arg_line("changes --workspace")
         .replace_crates_io(registry.index_url())
-        .with_status(2)
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
-[ERROR] unexpected argument '--workspace' found
-
-Usage: cargo ship changes
-
-For more information, try '--help'.
+     Changes for `foo`
 
 "#]])
         .run();

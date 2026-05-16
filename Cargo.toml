@@ -145,8 +145,9 @@ default = []
 annotate-snippets = "0.12.16"
 anstream = "1.0.0"
 anyhow = "1.0.102"
+cargo_metadata = "0.23.1"
 clap = { version = "4.6.1", features = ["derive"] }
-clap-cargo = "0.18.3"
+clap-cargo = { version = "0.18.3", features = ["cargo_metadata"] }
 env_logger = "0.11.10"
 git2 = "0.20.4"
 log = "0.4.29"

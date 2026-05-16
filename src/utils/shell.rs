@@ -1,6 +1,12 @@
 use std::io::Write;
 
 use crate::error::CargoResult;
+use clap::builder::styling::Style;
+use clap_cargo::style::HEADER;
+
+pub fn status(action: &str, message: impl std::fmt::Display) -> CargoResult<()> {
+    print(action, message, HEADER, true)
+}
 
 /// Print a styled error message.
 pub fn error(message: impl std::fmt::Display) -> CargoResult<()> {
@@ -8,6 +14,32 @@ pub fn error(message: impl std::fmt::Display) -> CargoResult<()> {
         annotate_snippets::Level::ERROR.primary_title(message.to_string()),
     )];
     print_report(report)
+}
+
+pub fn note(message: impl std::fmt::Display) -> CargoResult<()> {
+    let report = &[annotate_snippets::Group::with_title(
+        annotate_snippets::Level::NOTE.secondary_title(message.to_string()),
+    )];
+    print_report(report)
+}
+
+/// Print a message with a colored title in the style of Cargo shell messages.
+pub fn print(
+    status: &str,
+    message: impl std::fmt::Display,
+    style: Style,
+    justified: bool,
+) -> CargoResult<()> {
+    let mut stderr = anstream::stderr().lock();
+    if justified {
+        write!(stderr, "{style}{status:>12}{style:#}")?;
+    } else {
+        write!(stderr, "{style}{status}{style:#}:")?;
+    }
+
+    writeln!(stderr, " {message:#}")?;
+
+    Ok(())
 }
 
 /// Prints the passed in [`Report`][annotate_snippets::Report] to stderr
