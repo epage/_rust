@@ -30,6 +30,8 @@ macro_rules! process_error_from {
 process_error_from!(anyhow::Error);
 process_error_from!(std::io::Error);
 process_error_from!(cargo_metadata::Error);
+process_error_from!(tame_index::Error);
+process_error_from!(tame_index::external::reqwest::Error);
 
 impl From<i32> for CliError {
     fn from(code: i32) -> Self {

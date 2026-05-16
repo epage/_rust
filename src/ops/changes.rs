@@ -1,4 +1,6 @@
+use crate::error::CargoResult;
 use crate::error::CliError;
+use crate::utils::index::CratesIoIndex;
 use crate::utils::shell;
 
 #[derive(Clone, Debug, clap::Args)]
@@ -12,6 +14,8 @@ pub struct ChangesCli {
 
 impl ChangesCli {
     pub fn run(&self) -> Result<(), CliError> {
+        let mut index = CratesIoIndex::new();
+
         let mut metadata = self.manifest.metadata();
         let metadata = metadata.no_deps().exec()?;
         let (selected, excluded) = self.workspace.partition_packages(&metadata);
@@ -25,8 +29,15 @@ impl ChangesCli {
         }
         for pkg in selected {
             let pkg_name = pkg.name.as_str();
+            let Some(baseline_version) = baseline_version(pkg, &mut index)? else {
+                shell::status("new", format!("`{pkg_name}`"))?;
+                continue;
+            };
 
-            shell::status("Changes", format!("for `{pkg_name}`"))?;
+            shell::status(
+                "Changes",
+                format!("for `{pkg_name}` from {baseline_version}"),
+            )?;
         }
 
         if !excluded.is_empty() {
@@ -54,3 +65,18 @@ fn is_publishable(pkg: &cargo_metadata::Package) -> bool {
 }
 
 const CRATES_IO_REGISTRY_NAME: &str = "crates-io";
+
+fn baseline_version(
+    pkg: &cargo_metadata::Package,
+    index: &mut CratesIoIndex,
+) -> CargoResult<Option<semver::Version>> {
+    let Some(versions) = index.krate_versions(None, pkg.name.as_str(), Default::default())? else {
+        return Ok(None);
+    };
+    let baseline = versions
+        .into_iter()
+        .filter_map(|v| semver::Version::parse(&v.version).ok())
+        .filter(|v| *v <= pkg.version)
+        .max();
+    Ok(baseline)
+}

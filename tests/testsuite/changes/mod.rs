@@ -76,7 +76,7 @@ fn correct_base() {
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
-     Changes for `foo`
+     Changes for `foo` from 1.0.0
 
 "#]])
         .run();
@@ -139,7 +139,7 @@ fn package_selection() {
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
-     Changes for `foo`
+     Changes for `foo` from 1.0.0
 [NOTE] ignoring changes for `bar`
 
 "#]])
@@ -185,7 +185,7 @@ fn publish_crates_io() {
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
-     Changes for `foo`
+     Changes for `foo` from 1.0.0
 
 "#]])
         .run();
