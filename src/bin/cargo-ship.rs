@@ -1,4 +1,5 @@
 use cargo_ship::error;
+use cargo_ship::ops;
 use clap::Parser;
 
 fn main() {
@@ -9,9 +10,11 @@ fn main() {
 fn run() -> Result<(), error::CliError> {
     env_logger::Builder::from_env("CARGO_LOG").init();
 
-    let CargoCli::Ship(_ship) = CargoCli::parse();
+    let CargoCli::Ship(ship) = CargoCli::parse();
 
-    Ok(())
+    match &ship.ops {
+        Ops::Changes(cli) => cli.run(),
+    }
 }
 
 fn exit(result: Result<(), error::CliError>) -> ! {
@@ -38,5 +41,5 @@ pub struct ShipCli {
 
 #[derive(Clone, Debug, clap::Subcommand)]
 pub enum Ops {
-    Changes,
+    Changes(ops::changes::ChangesCli),
 }

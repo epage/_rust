@@ -185,6 +185,7 @@ dependencies = [
  "clap",
  "clap-cargo",
  "env_logger",
+ "git2",
  "log",
  "snapbox",
  "supports-unicode",

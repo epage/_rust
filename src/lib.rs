@@ -9,6 +9,7 @@
 #![warn(clippy::print_stdout)]
 
 pub mod error;
+pub mod ops;
 pub mod utils;
 
 #[doc = include_str!("../README.md")]
