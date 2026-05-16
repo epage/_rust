@@ -6,6 +6,8 @@ fn main() {
 }
 
 fn run() -> Result<(), error::CliError> {
+    env_logger::Builder::from_env("CARGO_LOG").init();
+
     Ok(())
 }
 
