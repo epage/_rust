@@ -1,9 +1,8 @@
 # These settings are synced to GitHub by https://probot.github.io/apps/settings/
 
 repository:
-  description: "DESCRIPTION"
-  homepage: "https://docs.rs/PROJECT"
-  topics: ""
+  description:  "Cargo subcommand `ship`: everything about releasing a rust crate."
+  topics: "rust cargo cargo-subcommand"
   has_issues: true
   has_projects: false
   has_wiki: false

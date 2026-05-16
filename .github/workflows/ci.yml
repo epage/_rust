@@ -23,7 +23,7 @@ jobs:
     permissions:
       contents: none
     name: CI
-    needs: [test, msrv, lockfile, docs, rustfmt, clippy, minimal-versions]
+    needs: [test, msrv, lockfile, docs, rustfmt, clippy]
     runs-on: ubuntu-latest
     if: "always()"
     steps:
@@ -83,29 +83,6 @@ jobs:
         tool: cargo-hack
     - name: Default features
       run: cargo hack check --each-feature --locked --rust-version --ignore-private --workspace --all-targets --keep-going
-  minimal-versions:
-    name: Minimal versions
-    strategy:
-      matrix:
-        os: ["ubuntu-latest"]
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      with:
-        persist-credentials: false
-    - name: Install stable Rust
-      uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
-      with:
-        toolchain: stable
-    - name: Install nightly Rust
-      uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
-      with:
-        toolchain: nightly
-    - name: Downgrade dependencies to minimal versions
-      run: cargo +nightly generate-lockfile -Z minimal-versions
-    - name: Compile with minimal versions
-      run: cargo +stable check --workspace --all-features --locked --keep-going
   lockfile:
     runs-on: ubuntu-latest
     steps:

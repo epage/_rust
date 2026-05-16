@@ -2,10 +2,10 @@
 resolver = "2"
 
 [workspace.package]
-repository = "REPOSITORY"
+repository = "https://github.com/crate-ci/cargo-ship"
 license = "MIT OR Apache-2.0"
-edition = "2021"
-rust-version = "1.65.0"  # MSRV
+edition = "2024"
+rust-version = "1.93"  # MSRV
 include = [
   "/build.rs",
   "/src/**/*",
@@ -114,11 +114,11 @@ lto = true
 # debug = "line-tables-only"  # requires Cargo 1.71
 
 [package]
-name = "PROJECT"
+name = "cargo-ship"
 version = "0.0.1"
-description = "DESCRIPTION"
-categories = []
-keywords = []
+description = "Cargo subcommand for you to smooth your release process"
+categories = ["development-tools::cargo-plugins"]
+keywords = ["cargo"]
 repository.workspace = true
 license.workspace = true
 edition.workspace = true

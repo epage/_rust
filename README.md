@@ -1,10 +1,16 @@
-# PROJECT
+# cargo ship
 
-> DESCRIPTION
+> Streamline your crate release process
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/PROJECT.svg)
 [![Crates Status](https://img.shields.io/crates/v/PROJECT.svg)][Crates.io]
+
+## Semver Compatibility
+
+cargo-ship's versioning tracks compatibility for the binaries, not the API.  We upload to
+crates.io to distribute the binary.  If using this as a library, be sure to pin the version
+with a `=` version requirement operator.
 
 ## License
 
