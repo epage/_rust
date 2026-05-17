@@ -226,7 +226,7 @@ fn publish_none() {
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
-     Changes for `foo`
+[NOTE] no compatible packages selected
 
 "#]])
         .run();
@@ -273,7 +273,7 @@ fn publish_alt() {
         .with_stdout_data(str![[r#"
 "#]])
         .with_stderr_data(str![[r#"
-     Changes for `foo`
+[NOTE] no compatible packages selected
 
 "#]])
         .run();

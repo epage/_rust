@@ -15,6 +15,10 @@ impl ChangesCli {
         let mut metadata = self.manifest.metadata();
         let metadata = metadata.no_deps().exec()?;
         let (selected, excluded) = self.workspace.partition_packages(&metadata);
+        let selected = selected
+            .into_iter()
+            .filter(|p| is_publishable(p))
+            .collect::<Vec<_>>();
 
         if selected.is_empty() {
             shell::note("no compatible packages selected")?;
@@ -28,6 +32,7 @@ impl ChangesCli {
         if !excluded.is_empty() {
             let excluded = excluded
                 .into_iter()
+                .filter(|p| is_publishable(p))
                 .map(|p| format!("`{}`", p.name))
                 .collect::<Vec<_>>();
             shell::note(format!("ignoring changes for {}", excluded.join(", ")))?;
@@ -36,3 +41,16 @@ impl ChangesCli {
         Ok(())
     }
 }
+
+fn is_publishable(pkg: &cargo_metadata::Package) -> bool {
+    match &pkg.publish {
+        None => true,
+        Some(registries) if registries.iter().any(|r| r == CRATES_IO_REGISTRY_NAME) => true,
+        Some(_) => {
+            log::trace!("package `{}` is not publishable", pkg.name);
+            false
+        }
+    }
+}
+
+const CRATES_IO_REGISTRY_NAME: &str = "crates-io";
