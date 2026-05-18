@@ -33,6 +33,9 @@ impl ChangesCli {
                 shell::status("new", format!("`{pkg_name}`"))?;
                 continue;
             };
+            let baseline_version_str = baseline_version.to_string();
+
+            let baseline_sha = commit_sha(pkg_name, &baseline_version_str, &mut index)?;
 
             shell::status(
                 "Changes",
@@ -79,4 +82,9 @@ fn baseline_version(
         .filter(|v| *v <= pkg.version)
         .max();
     Ok(baseline)
+}
+
+fn commit_sha(name: &str, version: &str, index: &mut CratesIoIndex) -> CargoResult<Option<String>> {
+    let krate = index.download(None, name, version, Default::default())?;
+    Ok(None)
 }

@@ -152,6 +152,7 @@ env_logger = "0.11.10"
 git2 = "0.20.4"
 log = "0.4.29"
 semver = "1.0.28"
+serde = { version = "1.0.228", features = ["derive"] }
 supports-unicode = "3.0.0"
 tame-index = { version = "0.25", features = ["native-certs", "sparse"] }
 

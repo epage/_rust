@@ -248,6 +248,7 @@ dependencies = [
  "git2",
  "log",
  "semver",
+ "serde",
  "snapbox",
  "supports-unicode",
  "tame-index",

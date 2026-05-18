@@ -65,6 +65,43 @@ impl CratesIoIndex {
         self.cache.remove(name);
     }
 
+    pub fn download(
+        &mut self,
+        registry: Option<&str>,
+        name: &str,
+        version: &str,
+        certs_source: CertsSource,
+    ) -> CargoResult<Option<Vec<u8>>> {
+        if let Some(registry) = registry {
+            log::trace!("Cannot connect to registry `{registry}`");
+            return Ok(None);
+        }
+
+        let url_base = "https://static.crates.io/crates";
+        // HACK: not loading `config.json` but that is only needed for alt registries
+        let url = format!("{url_base}/{name}/{version}/download");
+
+        if self.index.is_none() {
+            log::trace!("Connecting to index");
+            self.index = Some(RemoteIndex::open(certs_source)?);
+        }
+        let index = self.index.as_mut().unwrap();
+
+        let mut body = Vec::new();
+        let request = index
+            .client
+            .get(url)
+            .header(
+                tame_index::external::reqwest::header::USER_AGENT,
+                USER_AGENT,
+            )
+            .build()?;
+        let mut response = index.client.execute(request)?;
+        response.copy_to(&mut body)?;
+
+        Ok(Some(body))
+    }
+
     pub(crate) fn krate(
         &mut self,
         registry: Option<&str>,
@@ -198,3 +235,5 @@ pub enum CertsSource {
     /// Use certs from the system root certificate store.
     Native,
 }
+
+const USER_AGENT: &str = "cargo-ship";
