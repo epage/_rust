@@ -2,11 +2,14 @@ use tame_index::krate::IndexKrate;
 use tame_index::utils::flock::FileLock;
 
 use crate::error::CargoResult;
+use crate::utils::registry_config::RegistryConfig;
+use crate::utils::registry_config::crate_url;
 
 #[derive(Default)]
 pub struct CratesIoIndex {
     index: Option<RemoteIndex>,
     cache: std::collections::HashMap<String, Option<IndexKrate>>,
+    config: Option<RegistryConfig>,
 }
 
 impl CratesIoIndex {
@@ -15,6 +18,7 @@ impl CratesIoIndex {
         Self {
             index: None,
             cache: std::collections::HashMap::new(),
+            config: None,
         }
     }
 
@@ -100,6 +104,38 @@ impl CratesIoIndex {
         response.copy_to(&mut body)?;
 
         Ok(Some(body))
+    }
+
+    fn config(
+        &mut self,
+        registry: Option<&str>,
+        certs_source: CertsSource,
+    ) -> CargoResult<Option<RegistryConfig>> {
+        if let Some(registry) = registry {
+            log::trace!("Cannot connect to registry `{registry}`");
+            return Ok(None);
+        }
+
+        if self.config.is_none() {
+            if self.index.is_none() {
+                log::trace!("Connecting to index");
+                self.index = Some(RemoteIndex::open(certs_source)?);
+            }
+            let index = self.index.as_mut().unwrap();
+
+            let mut body = Vec::new();
+            let request = index
+                .client
+                .get(url)
+                .header(
+                    tame_index::external::reqwest::header::USER_AGENT,
+                    USER_AGENT,
+                )
+                .build()?;
+            let mut response = index.client.execute(request)?;
+        }
+
+        Ok(self.config.as_ref())
     }
 
     pub(crate) fn krate(
