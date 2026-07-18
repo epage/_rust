@@ -196,6 +196,8 @@ jobs:
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
+    permissions:
+      code-quality: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -210,8 +212,10 @@ jobs:
     - name: Install cargo-tarpaulin
       run: cargo install cargo-tarpaulin
     - name: Gather coverage
-      run: cargo tarpaulin --output-dir coverage --out lcov
-    - name: Publish to Coveralls
-      uses: coverallsapp/github-action@09b709cf6a16e30b0808ba050c7a6e8a5ef13f8d # master
+      run: cargo tarpaulin --out xml
+    - name: Upload coverage report
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+      uses: actions/upload-code-coverage@a72ab75b4dee0e479386fb9bf33c8dcf64b9c772 # v1.4.0
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        file: cobertura.xml
+        language: Rust
